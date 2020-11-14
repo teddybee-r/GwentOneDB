@@ -11,7 +11,9 @@
 4. Wait. it takes a long time to fill up the Database (22000+ rows)
 
 ### Success
-You now have a Gwent database featuring every Game version since the release of Gwent.
+You now have a Gwent database featuring every Game version since the release of Gwent.  
+```
 2018-10-23  v1.0.0.15  PC release  
 ...         ...        ...  
 2020-10-01  v7.3.0     Balance update
+```
