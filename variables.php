@@ -4,8 +4,8 @@
  */
 $database_server    = 'localhost';
 $database_name      = 'gwent';
-$database_user      = 'postgres';
-$database_pass      = 'meowmeow';
+$database_user      = '';
+$database_pass      = '';
 $database_schema    = 'card';
 
 $locales = ['cn' => 'zh-CN', 'de' => 'de-DE', 'en' => 'en-US', 'es' => 'es-ES',
@@ -50,9 +50,6 @@ $versions = [
      '7.1.0' => 'data\cards_v7.1.0.json',
      '7.1.1' => 'data\cards_v7.1.1.json',
      '7.2.0' => 'data\cards_v7.2.0.json',
-     '7.3.0' => 'data\cards_v7.3.0.json'
-];
-$versions2 = [
-    '1.0.0.15' => 'data\cards_v1.0.0.15.json',
-  '1.0.0.15-2' => 'data\cards_v1.0.0.15-2.json'
+     '7.3.0' => 'data\cards_v7.3.0.json',
+     '7.4.1' => 'data\cards_v7.4.1.json'
 ];
