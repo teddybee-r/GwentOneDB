@@ -62,10 +62,10 @@ $pdo->exec($sql);
 echo "<tr><td class=\"no\">$list_id</td><td class=\"part\">Table</td><td class=\"name\">$database_schema.data</td><td class=\"status\">&#10003;</td><td>";
 $list_id++;
 
-foreach ( $locales as $locale )
+foreach ( $locales as $locale => $jsonLocale )
 {
     $sql="
-    CREATE TABLE $database_schema.$locale
+    CREATE TABLE $database_schema.locale_$locale
     (
         i integer NOT NULL,
         name character varying COLLATE pg_catalog.\"default\",
@@ -78,11 +78,11 @@ foreach ( $locales as $locale )
     $pdo->exec($sql);
 
     $sql="
-    ALTER TABLE $database_schema.$locale
+    ALTER TABLE $database_schema.locale_$locale
         OWNER to $database_user";
     $pdo->exec($sql);
     
-    echo "<tr><td class=\"no\">$list_id</td><td class=\"part\">Table</td><td class=\"name\">$database_schema.$locale</td><td class=\"status\">&#10003;</td></tr>";
+    echo "<tr><td class=\"no\">$list_id</td><td class=\"part\">Table</td><td class=\"name\">$database_schema.locale_$locale</td><td class=\"status\">&#10003;</td></tr>";
     $list_id++;
 }
 

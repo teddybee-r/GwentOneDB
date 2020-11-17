@@ -135,60 +135,19 @@ foreach ($versions as $v => $location)
         $json_cn = "{ \"name\": \"$name_cn\", \"category\": \"$category_cn\", \"ability\": \"$ability_cn\", \"ability_html\": \"$abilityHTML_cn\", \"keyword_html\": \"$keywordHTML_cn\", \"flavor\": \"$flavor_cn\" }";
 
         $sql ="
-        INSERT INTO card.data (  i,   version,         id,   cardid,  audioid,   artid,         attributes )
+        INSERT INTO $database_schema.data (  i,   version,         id,   cardid,  audioid,   artid,         attributes )
         VALUES                ( $i, '$version', '$json_id', $cardid, $audioid, '$artid', '$json_attributes' )";
 
-        $sql_en ="
-        INSERT INTO card.en (  i,   name,       category,        ability,       ability_html,      keyword_html,      flavor )
-        VALUES              ( $i, '$name_en', '$category_en', '$ability_en', '$abilityHTML_en', '$keywordHTML_en', '$flavor_en' )";
-        $sql_de ="
-        INSERT INTO card.de (  i,   name,       category,        ability,       ability_html,      keyword_html,      flavor )
-        VALUES              ( $i, '$name_de', '$category_de', '$ability_de', '$abilityHTML_de', '$keywordHTML_de', '$flavor_de' )";
-        $sql_es ="
-        INSERT INTO card.es (  i,   name,       category,        ability,       ability_html,      keyword_html,      flavor )
-        VALUES              ( $i, '$name_es', '$category_es', '$ability_es', '$abilityHTML_es', '$keywordHTML_es', '$flavor_es' )";
-        $sql_fr ="
-        INSERT INTO card.fr (  i,   name,       category,        ability,       ability_html,      keyword_html,      flavor )
-        VALUES              ( $i, '$name_fr', '$category_fr', '$ability_fr', '$abilityHTML_fr', '$keywordHTML_fr', '$flavor_fr' )";
-        $sql_it ="
-        INSERT INTO card.it (  i,   name,       category,        ability,       ability_html,      keyword_html,      flavor )
-        VALUES              ( $i, '$name_it', '$category_it', '$ability_it', '$abilityHTML_it', '$keywordHTML_it', '$flavor_it' )";
-        $sql_jp ="
-        INSERT INTO card.jp (  i,   name,       category,        ability,       ability_html,      keyword_html,      flavor )
-        VALUES              ( $i, '$name_jp', '$category_jp', '$ability_jp', '$abilityHTML_jp', '$keywordHTML_jp', '$flavor_jp' )";
-        $sql_kr ="
-        INSERT INTO card.kr (  i,   name,       category,        ability,       ability_html,      keyword_html,      flavor )
-        VALUES              ( $i, '$name_kr', '$category_kr', '$ability_kr', '$abilityHTML_kr', '$keywordHTML_kr', '$flavor_kr' )";
-        $sql_mx ="
-        INSERT INTO card.mx (  i,   name,       category,        ability,       ability_html,      keyword_html,      flavor )
-        VALUES              ( $i, '$name_mx', '$category_mx', '$ability_mx', '$abilityHTML_mx', '$keywordHTML_mx', '$flavor_mx' )";
-        $sql_pl ="
-        INSERT INTO card.pl (  i,   name,       category,        ability,       ability_html,      keyword_html,      flavor )
-        VALUES              ( $i, '$name_pl', '$category_pl', '$ability_pl', '$abilityHTML_pl', '$keywordHTML_pl', '$flavor_pl' )";
-        $sql_pt ="
-        INSERT INTO card.pt (  i,   name,       category,        ability,       ability_html,      keyword_html,      flavor )
-        VALUES              ( $i, '$name_pt', '$category_pt', '$ability_pt', '$abilityHTML_pt', '$keywordHTML_pt', '$flavor_pt' )";
-        $sql_ru ="
-        INSERT INTO card.ru (  i,   name,       category,        ability,       ability_html,      keyword_html,      flavor )
-        VALUES              ( $i, '$name_ru', '$category_ru', '$ability_ru', '$abilityHTML_ru', '$keywordHTML_ru', '$flavor_ru' )";
-        $sql_cn ="
-        INSERT INTO card.cn (  i,   name,       category,        ability,       ability_html,      keyword_html,      flavor )
-        VALUES              ( $i, '$name_cn', '$category_cn', '$ability_cn', '$abilityHTML_cn', '$keywordHTML_cn', '$flavor_cn' )";
-
         $pdo->exec($sql);;
+        foreach ( $locales as $locale )
+        {
+            $sql ="
+            INSERT INTO $database_schema.locale_$locale
+                   (  i,   name,       category,        ability,       ability_html,      keyword_html,      flavor )
+            VALUES ( $i, '$name._.$locale', '$category._.$locale', '$ability._.$locale', '$abilityHTML._.$locale', '$keywordHTML._.$locale', '$flavor._.$locale' )";
 
-        $pdo->exec($sql_en);
-        $pdo->exec($sql_de);
-        $pdo->exec($sql_es);
-        $pdo->exec($sql_fr);
-        $pdo->exec($sql_it);
-        $pdo->exec($sql_jp);
-        $pdo->exec($sql_kr);
-        $pdo->exec($sql_mx);
-        $pdo->exec($sql_pl);
-        $pdo->exec($sql_pt);
-        $pdo->exec($sql_ru);
-        $pdo->exec($sql_cn);
+            $pdo->exec($sql);;
+        }
         $i++;
     }
     echo $version. ' success <br>';
