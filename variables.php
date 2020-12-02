@@ -4,8 +4,8 @@
  */
 $database_server    = 'localhost';
 $database_name      = 'gwent';
-$database_user      = '';
-$database_pass      = '';
+$database_user      = 'postgres';
+$database_pass      = 'meowmeow';
 $database_schema    = 'card';
 
 $locales = ['cn' => 'zh-CN', 'de' => 'de-DE', 'en' => 'en-US', 'es' => 'es-ES',

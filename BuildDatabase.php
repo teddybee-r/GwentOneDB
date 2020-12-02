@@ -43,7 +43,8 @@ CREATE TABLE $database_schema.data
     cardid integer,
     audioid integer,
     artid integer,
-    attributes jsonb
+    attributes jsonb,
+    audiofiles jsonb
 )";
 $pdo->exec($sql);
 
