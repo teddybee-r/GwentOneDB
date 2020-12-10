@@ -51,5 +51,6 @@ $versions = [
      '7.1.1' => 'data\cards_v7.1.1.json',
      '7.2.0' => 'data\cards_v7.2.0.json',
      '7.3.0' => 'data\cards_v7.3.0.json',
-     '7.4.1' => 'data\cards_v7.4.1.json'
+     '7.4.1' => 'data\cards_v7.4.1.json',
+     '8.0.0' => 'data\cards_v8.0.0.json'
 ];
