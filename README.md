@@ -19,6 +19,8 @@ You now have a Gwent database featuring every Game version since the release of 
 2020-12-08  v8.0.0     Way of the Witcher Expansion
 ```
 
+# Database (pgadmin)
+![DB image](database.png)
 
 # PHP postgres example
 This query gives full card data of a single id.  
