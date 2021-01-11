@@ -14,8 +14,6 @@ CREATE DATABASE $database_name
     WITH 
     OWNER = $database_user
     ENCODING = 'UTF8'
-    LC_COLLATE = 'English_Germany.1252'
-    LC_CTYPE = 'English_Germany.1252'
     TABLESPACE = pg_default
     CONNECTION LIMIT = -1;
 ";
