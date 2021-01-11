@@ -59,8 +59,8 @@ foreach ($versions as $version => $location)
         $json_attributes = "{ \"provision\": $provision, \"power\": $power, \"armor\": $armor, \"reach\": $reach, \"type\": \"$type\", \"color\": \"$color\", \"rarity\": \"$rarity\", \"set\": \"$availability\", \"related\": \"$related\", \"artist\": \"$artist\", \"faction\": \"$faction\", \"factionSecondary\": \"$faction2\" }";
 
         $sql ="INSERT INTO $database_schema.data
-               (  i,   version,         id,   cardid,  audioid,   artid,         attributes,         audiofiles)
-        VALUES ( $i, '$version', '$json_id', $cardid, $audioid, '$artid', '$json_attributes', '$json_audiofiles' )";
+               (  i,   version,         id,         attributes,         audiofiles)
+        VALUES ( $i, '$version', '$json_id', '$json_attributes', '$json_audiofiles' )";
 
         $pdo->exec($sql);;
         $i++;

@@ -40,10 +40,9 @@ CREATE TABLE $database_schema.data
     i integer NOT NULL,
     version character varying COLLATE pg_catalog.\"default\",
     id jsonb,
-    cardid integer,
-    audioid integer,
-    artid integer,
     attributes jsonb,
+    changelog jsonb,
+    extra jsonb,
     audiofiles jsonb
 )";
 $pdo->exec($sql);
