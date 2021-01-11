@@ -25,6 +25,7 @@ card.data are jsonb fields so we need to decode them later.
 ```php
 $version = $_GET["version"] ?? '8.0.0';
 $id      = $_GET["id"] ?? 202308;
+
 $pdo = new PDO("pgsql:host=$database_server;dbname=$database_name", $database_user, $database_pass);
 $sql = "
         SELECT *     
@@ -60,13 +61,17 @@ $power        = $attr->power;
 $armor        = $attr->armor;
 $provision    = $attr->provision;
 $reach	      = $attr->reach;
-$abilityIcon  = 2;
 ?>
 ```
-Here is a fun one. This gets us all of the cards.  
-And we are fetching the individual values of jsonb rows
+Here is a fun one. This gets us all of the data.  
+And we are fetching the individual values of jsonb rows.  
+
+I actually use this for `someapi.php?lang=all`
 ```php
+
+$version = $_GET["version"] ?? '8.0.0';
 $pdo = new PDO("pgsql:host=$database_server;dbname=$database_name", $database_user, $database_pass);
+
 $sql="
 SELECT 
 data.id->>'card' AS id,
@@ -182,9 +187,13 @@ INNER JOIN  card.locale_mx ON card.locale_mx.i = card.data.i
 INNER JOIN  card.locale_pl ON card.locale_pl.i = card.data.i
 INNER JOIN  card.locale_pt ON card.locale_pt.i = card.data.i
 INNER JOIN  card.locale_ru ON card.locale_ru.i = card.data.i
-WHERE       card.data.version = '7.3.0'
+WHERE       card.data.version = :version
 ORDER BY    card.data.i
 ";
-//                          ARRAYS $cards["name"]
-$cards = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+$stmt = $pdo->prepare($sql);
+$stmt->bindParam(':version', $version);
+$stmt->execute();
+
+//              ARRAYS $cards["name"]
+$cards = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ```
