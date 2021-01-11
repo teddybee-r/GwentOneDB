@@ -3,6 +3,7 @@
 ## Requirements
 1. Postgres installation
 2. PHP installation to run the scripts
+3. Localization available here: [GwentLocalization](https://github.com/teddybee-r/GwentLocalization "github.com/teddybee-r/GwentLocalization")  
 
 ### Setup
 1. Adjust the database variables in variables.php to connect to your postgres server
@@ -61,14 +62,12 @@ $power        = $attr->power;
 $armor        = $attr->armor;
 $provision    = $attr->provision;
 $reach	      = $attr->reach;
-?>
 ```
 Here is a fun one. This gets us all of the data.  
 And we are fetching the individual values of jsonb rows.  
 
 I actually use this for `someapi.php?lang=all`
 ```php
-
 $version = $_GET["version"] ?? '8.0.0';
 $pdo = new PDO("pgsql:host=$database_server;dbname=$database_name", $database_user, $database_pass);
 
