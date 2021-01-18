@@ -39,8 +39,6 @@ CREATE TABLE $database_schema.data
     version character varying COLLATE pg_catalog.\"default\",
     id jsonb,
     attributes jsonb,
-    changelog jsonb,
-    extra jsonb,
     audiofiles jsonb
 )";
 $pdo->exec($sql);
