@@ -31,7 +31,7 @@ if (!empty($v)) {
             $sql ="INSERT INTO $database_schema.locale_$locale
                    ( i,         name,    category,    ability,    ability_html,   keyword_html,   flavor  )
             VALUES ( DEFAULT, '$name', '$category', '$ability', '$abilityHTML', '$keywordHTML', '$flavor' )";
-            $pdo->exec($sql);;
+            $pdo->exec($sql);
         }
         $cardid         = $value['cardId'];
         $artid          = $value['ArtId'];
