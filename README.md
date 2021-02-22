@@ -16,8 +16,14 @@ You now have a Gwent database featuring every Game version since the release of 
 ```
 2018-10-23  v1.0.0.15  PC release  
 ...         ...        ...  
-2020-12-08  v8.0.0     Way of the Witcher Expansion
+2021-02-09  v8.2.0     Way of the Witcher Expansion
 ```
+
+### Future changes
+I will probably try to add my [changelog data](https://gwent.one/en/cards/changelog/ "gwent.one/en/cards/changelog/") into this database.  
+This would be another json column.  
+{'change': 'nerf', 'power': 0, 'armor': 0, 'provision': 1, ...}  
+I keep track of what has been changed in my changelog that is why its 0 or 1
 
 # Database (pgadmin)
 ![DB image](database.png)
