@@ -35,7 +35,7 @@ $list_id++;
 $sql ="
 CREATE TABLE $database_schema.data
 (
-    i integer NOT NULL,
+    i SERIAL PRIMARY KEY,
     version character varying COLLATE pg_catalog.\"default\",
     id jsonb,
     attributes jsonb,
@@ -48,13 +48,6 @@ ALTER TABLE $database_schema.data
     OWNER to $database_user;";
 $pdo->exec($sql);
 
-$sql="    
-CREATE INDEX \"data_index\"
-ON $database_schema.data USING btree
-(cardid ASC NULLS LAST, version COLLATE pg_catalog.\"default\" ASC NULLS LAST, attributes ASC NULLS LAST)
-TABLESPACE pg_default";
-$pdo->exec($sql);
-
 echo "<tr><td class=\"no\">$list_id</td><td class=\"part\">Table</td><td class=\"name\">$database_schema.data</td><td class=\"status\">&#10003;</td><td>";
 $list_id++;
 
@@ -63,7 +56,7 @@ foreach ( $locales as $locale => $jsonLocale )
     $sql="
     CREATE TABLE $database_schema.locale_$locale
     (
-        i integer NOT NULL,
+        i SERIAL PRIMARY KEY,
         name character varying COLLATE pg_catalog.\"default\",
         category text COLLATE pg_catalog.\"default\",
         ability text COLLATE pg_catalog.\"default\",
