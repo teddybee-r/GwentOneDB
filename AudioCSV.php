@@ -9,7 +9,7 @@
      */
     echo "i;audioid;file<br>";
     $i = 1; 
-    $file    = file_get_contents('data\cards_v8.0.0.json');
+    $file    = file_get_contents('data\cards_v8.3.0.json');
     $data    = json_decode($file, true);
     /* Loop through every json field (id) */
     foreach ($data as $key => $value)
