@@ -26,7 +26,7 @@ Enter one of the above numbers:
 ```
 
 ### 2021-05-11 Update
-Rewrote the whole thing. Now operates from the command line.
+Rewrote the whole thing. Now operates from the command line.  
 Includes my hand crafted changelog. (Yes I've tracked every change since the game was released);
 
 ### Success
