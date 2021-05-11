@@ -1,29 +1,41 @@
-﻿# Gwent One Database Setup
+﻿# Gwent One Database
+
+## What is this?
+A PostgreSQL card database for the game Gwent. This database gives you access to all of the card versions since the official release (2018-10-23). The data is available in 12 languages.
 
 ## Requirements
 1. Postgres installation
-2. PHP installation to run the scripts
+2. PHP installation
 3. Localization available here: [GwentLocalization](https://github.com/teddybee-r/GwentLocalization "github.com/teddybee-r/GwentLocalization")  
 
 ### Setup
-1. Adjust the database variables in variables.php to connect to your postgres server
-2. run BuildDatabase.php to create the Database
-3. run FeedDatabase.php to feed the Database
-4. Wait. it takes a long time to fill up the Database (23000+ rows)
+1. Adjust the database variables in the config folder to connect to your postgres server.
+2. run 'php build_database.php' in your terminal
+
+
+```
+PostgreSQL Gwent Database - gwent.one
+
+1. Build database (gwent2) structure
+2. Insert data: Every version
+3. Insert data: Single version
+4. Build database structure and insert data
+0. Drop Database
+
+Enter one of the above numbers: 
+```
+
+### 2021-05-11 Update
+Rewrote the whole thing. Now operates from the command line.
+Includes my hand crafted changelog. (Yes I've tracked every change since the game was released);
 
 ### Success
-You now have a Gwent database featuring every Game version since the release of Gwent.  
+You now have a Gwent database featuring every game version since the release of Gwent.  
 ```
 2018-10-23  v1.0.0.15  PC release  
 ...         ...        ...  
-2021-02-09  v8.2.0     Way of the Witcher Expansion
+2021-05-06  v8.5.0     Triss Journey
 ```
-
-### Future changes
-I will probably try to add my [changelog data](https://gwent.one/en/cards/changelog/ "gwent.one/en/cards/changelog/") into this database.  
-This would be another json column.  
-{'change': 'nerf', 'power': 0, 'armor': 0, 'provision': 1, ...}  
-I keep track of what has been changed in my changelog that is why its 0 or 1
 
 # Database (pgadmin)
 ![DB image](database.png)
@@ -31,9 +43,10 @@ I keep track of what has been changed in my changelog that is why its 0 or 1
 # PHP postgres example
 This query gives full card data of a single id.  
 card.data are jsonb fields so we need to decode them later.
+
 ```php
-$version = $_GET["version"] ?? '8.0.0';
-$id      = $_GET["id"] ?? 202308;
+$version = '8.0.0';
+$id      = 202308;
 
 $pdo = new PDO("pgsql:host=$database_server;dbname=$database_name", $database_user, $database_pass);
 $sql = "
@@ -76,7 +89,7 @@ And we are fetching the individual values of jsonb rows.
 
 I actually use this for `someapi.php?lang=all`
 ```php
-$version = $_GET["version"] ?? '8.0.0';
+$version = '8.0.0';
 $pdo = new PDO("pgsql:host=$database_server;dbname=$database_name", $database_user, $database_pass);
 
 $sql="
