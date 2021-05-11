@@ -23,13 +23,13 @@ if ( $input === 1 ) {
 } elseif ( $input === 2 ) {
 	$DB->insertData();
 } elseif ( $input === 3 ) {
-	$v = (string)readline("\nEnter the version (8.5.0): ");
+	$v = (string)readline("Enter the version (8.5.0): ");
 	$DB->insertData($v);
 } elseif ( $input === 4 ) {
 	$DB->createDBStructure();
 	$DB->insertData();
 } elseif ( $input === 0 ) {
-	$confirm = (string)readline("\nType '".DB_NAME."' to confirm: ");
+	$confirm = (string)readline("Type '".DB_NAME."' to confirm: ");
 	if ( $confirm === DB_NAME )
 	$DB->dropDatabase();
 }
