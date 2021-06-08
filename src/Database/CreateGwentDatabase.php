@@ -10,7 +10,8 @@ Class CreateGwentDatabase
 		'5.0.0', '5.0.1', '5.1.0', '5.2.0',
 		'6.1.0', '6.2.0', 
 		'7.0.0', '7.0.2', '7.1.0', '7.1.1', '7.2.0', '7.3.0', '7.4.1',
-		'8.0.0', '8.1.0', '8.2.0', '8.3.0', '8.4.0', '8.5.0'
+		'8.0.0', '8.1.0', '8.2.0', '8.3.0', '8.4.0', '8.5.0',
+		'9.0.0'
 	];
 	private $locales = [
 		'cn' => 'zh-CN', 'de' => 'de-DE', 'en' => 'en-US', 'es' => 'es-ES',
@@ -38,8 +39,6 @@ Class CreateGwentDatabase
 			WITH 
 			OWNER = ".DB_USER."
 			ENCODING = 'UTF8'
-			LC_COLLATE = 'und-x-icu'
-			LC_CTYPE = 'und-x-icu'
 			TABLESPACE = pg_default
 			CONNECTION LIMIT = -1
 			TEMPLATE template0;
@@ -99,12 +98,12 @@ Class CreateGwentDatabase
 		    CREATE TABLE IF NOT EXISTS ".DB_SCHEMA.".locale_$locale
 		    (
 		        i SERIAL PRIMARY KEY,
-		        name character varying COLLATE pg_catalog.\"default\",
-		        category text COLLATE pg_catalog.\"default\",
-		        ability text COLLATE pg_catalog.\"default\",
-		        ability_html text COLLATE pg_catalog.\"default\",
-		        keyword_html text COLLATE pg_catalog.\"default\",
-		        flavor text COLLATE pg_catalog.\"default\"
+		        name character varying COLLATE \"und-x-icu\",
+		        category text COLLATE \"und-x-icu\",
+		        ability text COLLATE \"und-x-icu\",
+		        ability_html text COLLATE \"und-x-icu\",
+		        keyword_html text COLLATE \"und-x-icu\",
+		        flavor text COLLATE \"und-x-icu\"
 			);
 		    ALTER TABLE ".DB_SCHEMA.".locale_$locale
 		    OWNER to ".DB_USER."";
