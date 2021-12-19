@@ -11,7 +11,7 @@ Class CreateGwentDatabase
 		'6.1.0', '6.2.0', 
 		'7.0.0', '7.0.2', '7.1.0', '7.1.1', '7.2.0', '7.3.0', '7.4.1',
 		'8.0.0', '8.1.0', '8.2.0', '8.3.0', '8.4.0', '8.5.0',
-		'9.0.0', '9.1.0', '9.2.0', '9.3.0', '9.4.0', '9.5.0'
+		'9.0.0', '9.1.0', '9.2.0', '9.3.0', '9.4.0', '9.5.0', '9.6.0', '9.6.1'
 	];
 	private $locales = [
 		'cn' => 'zh-CN', 'de' => 'de-DE', 'en' => 'en-US', 'es' => 'es-ES',
@@ -29,7 +29,6 @@ Class CreateGwentDatabase
 
 	public function createDBStructure()
 	{
-
 		$pdo = new PDO("pgsql:host=".DB_HOST."", DB_USER, DB_PASS);
 
 		/* * * * *  D A T A B A S E  * * * * */
@@ -61,32 +60,34 @@ Class CreateGwentDatabase
 		/* * * * *  D A T A  * * * * */
 
 		$sql ="
-		CREATE TABLE IF NOT EXISTS ".DB_SCHEMA.".data
-		(
-			i SERIAL PRIMARY KEY,
-			version character varying COLLATE pg_catalog.\"default\",
-			id jsonb,
-			attributes jsonb,
-			audiofiles jsonb
-		);
-		ALTER TABLE ".DB_SCHEMA.".data
-		OWNER to ".DB_USER."";
+			CREATE TABLE IF NOT EXISTS ".DB_SCHEMA.".data
+			(
+				i SERIAL PRIMARY KEY,
+				version character varying COLLATE pg_catalog.\"default\",
+				id jsonb,
+				attributes jsonb,
+				audiofiles jsonb
+			);
+			ALTER TABLE ".DB_SCHEMA.".data
+			OWNER to ".DB_USER."
+		";
 		$pdo->exec($sql);
 		echo "=> Table: ".DB_SCHEMA.".data \n";
 		
 		/* * * * *  C H A N G L O G  * * * * */
 
 		$sql ="
-		CREATE TABLE IF NOT EXISTS ".DB_SCHEMA.".changelog
-		(
-		    i SERIAL PRIMARY KEY,
-		    version character varying COLLATE pg_catalog.\"default\",
-		    card int,
-		    type character varying COLLATE pg_catalog.\"default\",
-		    change jsonb
-		);
-		ALTER TABLE ".DB_SCHEMA.".changelog
-		OWNER to ".DB_USER."";
+			CREATE TABLE IF NOT EXISTS ".DB_SCHEMA.".changelog
+			(
+			    i SERIAL PRIMARY KEY,
+			    version character varying COLLATE pg_catalog.\"default\",
+			    card int,
+			    type character varying COLLATE pg_catalog.\"default\",
+			    change jsonb
+			);
+			ALTER TABLE ".DB_SCHEMA.".changelog
+			OWNER to ".DB_USER."
+		";
 		$pdo->exec($sql);
 		echo "=> Table: ".DB_SCHEMA.".changelog \n";
 
@@ -95,23 +96,23 @@ Class CreateGwentDatabase
 		foreach ( $this->locales as $locale => $jsonLocale )
 		{
 		    $sql="
-		    CREATE TABLE IF NOT EXISTS ".DB_SCHEMA.".locale_$locale
-		    (
-		        i SERIAL PRIMARY KEY,
-		        name character varying COLLATE \"und-x-icu\",
-		        category text COLLATE \"und-x-icu\",
-		        ability text COLLATE \"und-x-icu\",
-		        ability_html text COLLATE \"und-x-icu\",
-		        keyword_html text COLLATE \"und-x-icu\",
-		        flavor text COLLATE \"und-x-icu\"
-			);
-		    ALTER TABLE ".DB_SCHEMA.".locale_$locale
-		    OWNER to ".DB_USER."";
+		    	CREATE TABLE IF NOT EXISTS ".DB_SCHEMA.".locale_$locale
+		    	(
+		    	    i SERIAL PRIMARY KEY,
+		    	    name character varying COLLATE \"und-x-icu\",
+		    	    category text COLLATE \"und-x-icu\",
+		    	    ability text COLLATE \"und-x-icu\",
+		    	    ability_html text COLLATE \"und-x-icu\",
+		    	    keyword_html text COLLATE \"und-x-icu\",
+		    	    flavor text COLLATE \"und-x-icu\"
+				);
+		    	ALTER TABLE ".DB_SCHEMA.".locale_$locale
+		    	OWNER to ".DB_USER."
+			";
 		    $pdo->exec($sql);
 			echo "=> Table: ".DB_SCHEMA.".locale_$locale \n";
 		}
 	}
-
 
 	/*
 	 * 1. Insert into data & locale tables
@@ -193,7 +194,7 @@ Class CreateGwentDatabase
 			echo "=> Insert Data: $version \n";
 		}
 
-		$json    = file_get_contents('src/database/data/changelog.json');
+		$json    = file_get_contents('src/Database/data/changelog.json');
 		$data    = json_decode($json, true);
 		/* Loop through every json field (id) */
 		
@@ -239,11 +240,10 @@ Class CreateGwentDatabase
 		/* Drop active connections */
 		try {
 			$sql = "
-			REVOKE CONNECT ON DATABASE ".DB_NAME." FROM public;
-
-			SELECT pid, pg_terminate_backend(pid) 
-			FROM pg_stat_activity 
-			WHERE datname = '".DB_NAME."' AND pid <> pg_backend_pid();
+				REVOKE CONNECT ON DATABASE ".DB_NAME." FROM public;
+				SELECT pid, pg_terminate_backend(pid) 
+				FROM pg_stat_activity 
+				WHERE datname = '".DB_NAME."' AND pid <> pg_backend_pid();
 			";
 			$pdo->exec($sql);
 
