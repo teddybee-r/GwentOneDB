@@ -3,9 +3,17 @@
 ## What is this?
 A PostgreSQL card database for the game Gwent. This database gives you access to all of the card versions since the official release (2018-10-23). The data is available in 12 languages.
 
+## API
+If you do not want a full PostgreSQL database you can grab the card data from the gwent.one api
+```
+documentation     - https://api.gwent.one                 
+english only data - https://api.gwent.one?key=data        
+all language data - https://api.gwent.one?key=data&language=all
+```
+
 ## Requirements
 1. Postgres installation
-2. PHP installation
+2. PHP installation with PDO plugin
 3. Localization available here: [GwentLocalization](https://github.com/teddybee-r/GwentLocalization "github.com/teddybee-r/GwentLocalization")  
 
 ### Setup
