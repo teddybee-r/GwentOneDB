@@ -13,36 +13,88 @@ all language data - https://api.gwent.one?key=data&language=all
 
 ## Requirements
 1. Postgres installation
-2. PHP installation with PDO plugin
+2. PHP installation with pdo_pgsql installed and enabled
 3. Localization available here: [GwentLocalization](https://github.com/teddybee-r/GwentLocalization "github.com/teddybee-r/GwentLocalization")  
 
 ### Setup
 1. Adjust the database variables in the config folder to connect to your postgres server.
-2. run 'php build_database.php' in your terminal
+2. run 'php bin/database' in your terminal
 
+
+### 2022-08-30 Update
+Added tests, and more options, some code rewrite  
+
+### Benchmark
+```
+Tested on:
+
+Ryzen 2600, Windows 10, PHP 7.4, Postgres 12
+Time: ~160s
+i5-7500T, Fedora Server 36, Podman: (php:8.1-fpm (8.1.9), postgres:latest (14.5))
+Time: ~840s
+Intel Atom N2800 (2c/4t 1.86GHz), Ubuntu 18.04, Docker: (php:fpm, postgres:12)
+Time: ~6800s ~110min
+
+using 'php bin/database => 1'
+52 version inserts (up to 10.8.0)
+```
 
 ```
-PostgreSQL Gwent Database - gwent.one
+php bin/database
 
-1. Build database (gwent2) structure
-2. Insert data: Every version
-3. Insert data: Single version
-4. Build database structure and insert data
-0. Drop Database
+  _|_|_|    _|  PostgreSQL Gwent Database
+_|        _|_|               by gwent.one
+_|  _|_|    _|
+_|    _|    _|  Database: gwent
+  _|_|_|    _|  Schema:   card
 
-Enter one of the above numbers: 
-```
 
-### 2021-05-11 Update
-Rewrote the whole thing. Now operates from the command line.  
-Includes my hand crafted changelog. (Yes I've tracked every change since the game was released);
+-- First Time Setup --
+1. Build database structure and insert data
+2. Build database structure
+3. Insert data: Every version
 
-### Success
-You now have a Gwent database featuring every game version since the release of Gwent.  
-```
-2018-10-23  v1.0.0.15  PC release  
-...         ...        ...  
-2021-05-06  v8.5.0     Triss Journey
+-- Update DB --
+11. Insert data: Single version
+12. Insert data: Only current version
+## This inserts the latest and deletes previous versions
+
+-- Reset Changelog --
+21. Truncate changelog and insert data
+## Changelog data gets updated for previous versions sometimes
+
+-- Delete DB --
+99. Drop Database
+
+Enter one of the above numbers: 1
+
+=> Database: gwent
+=> Schema: card
+=> Table: card.data
+=> Table: card.changelog
+=> Table: card.locale_cn _de _en _es _fr _it _jp _kr _mx _pl _pt _ru
+
+
+  _|_|_|    _|  Depending on the hardware
+_|        _|_|  this may take a while!
+_|  _|_|    _|
+_|    _|    _|  Inserting 52 version(s)
+  _|_|_|    _|       with 12 locale(s)
+
+   Version      Cards   Time
+=> 1.0.0.15     524     1.75s
+=> ...          ...     ...
+=> 10.8.0       1260    4.1s
+=> Insert Data: Changelog
+
+=> Total Time:165.34s
+
+
+php bin/test
+Test passed :: Tables have the same number of entries: 49096
+Test passed :: Tables match the number of locales configured: 12
+Test passed :: Tables match the number of versions configured: 52
+Test passed :: The last entry matches the latest version (10.8.0)
 ```
 
 # Database (pgadmin)
@@ -92,10 +144,7 @@ $armor        = $attr->armor;
 $provision    = $attr->provision;
 $reach	      = $attr->reach;
 ```
-Here is a fun one. This gets us all of the data.  
-And we are fetching the individual values of jsonb rows.  
 
-I actually use this for `someapi.php?lang=all`
 ```php
 $version = '8.0.0';
 $pdo = new PDO("pgsql:host=$database_server;dbname=$database_name", $database_user, $database_pass);

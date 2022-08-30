@@ -1,261 +1,298 @@
 <?php
+declare(strict_types=1);
+
+namespace G1\Database;
+
+use \PDO;
+use \Exception;
 
 Class CreateGwentDatabase
 {
-	private $versions = [
-		'1.0.0.15', '1.0.0.15-2', '1.0.1.26', '1.1.0', '1.2.0', '1.3.0',
-		'2.0.0', '2.0.1', '2.1.0', '2.2.0',
-		'3.0.0', '3.0.1', '3.1.0', '3.2.0',
-		'4.0.0', '4.0.3', '4.1.0',
-		'5.0.0', '5.0.1', '5.1.0', '5.2.0',
-		'6.1.0', '6.2.0', 
-		'7.0.0', '7.0.2', '7.1.0', '7.1.1', '7.2.0', '7.3.0', '7.4.1',
-		'8.0.0', '8.1.0', '8.2.0', '8.3.0', '8.4.0', '8.5.0',
-		'9.0.0', '9.1.0', '9.2.0', '9.3.0', '9.4.0', '9.5.0', '9.6.0', '9.6.1',
-		'10.1.0', '10.2.0', '10.3.0', '10.4.0', '10.5.0', '10.6.0', '10.7.0', '10.8.0'
-	];
-	private $locales = [
-		'cn' => 'zh-CN', 'de' => 'de-DE', 'en' => 'en-US', 'es' => 'es-ES',
-		'fr' => 'fr-FR', 'it' => 'it-IT', 'jp' => 'ja-JP', 'kr' => 'ko-KR',
-		'mx' => 'es-MX', 'pl' => 'pl-PL', 'pt' => 'pt-BR', 'ru' => 'ru-RU'
-	];
+    private $db_host;
+    private $db_name;
+    private $db_user;
+    private $db_pass;
+    private $db_schema;
 
-	/*
-	 * 1. Create DB
-	 * 2. Create Schema
-	 * 3. Create Table data
-	 * 4. Create Table changelog
-	 * 5+ Create Tables locale_cn/de/en/..
-	 */
+    private $versions;
+    private $locales;
 
-	public function createDBStructure()
-	{
-		$pdo = new PDO("pgsql:host=".DB_HOST."", DB_USER, DB_PASS);
+    private $time_data;
+    private $time_changelog;
+    private $total_rows;
 
-		/* * * * *  D A T A B A S E  * * * * */
+    function __construct($v = '')
+    {
+        include DOC_ROOT.'/config/database.php';
 
-		$sql = "
-			CREATE DATABASE ".DB_NAME."
-			WITH 
-			OWNER = ".DB_USER."
-			ENCODING = 'UTF8'
-			TABLESPACE = pg_default
-			CONNECTION LIMIT = -1
-			TEMPLATE template0;
-		";
-		$pdo->exec($sql);
-		echo "=> Database: ".DB_NAME." \n";
+        $this->db_host   = $db['host'];
+        $this->db_name   = $db['name'];
+        $this->db_user   = $db['user'];
+        $this->db_pass   = $db['pass'];
+        $this->db_schema = $db['schema'];
+        $this->locales = $locales;
 
-		/* Add dbname to PDO */
-		$pdo = new PDO("pgsql:host=".DB_HOST.";dbname=".DB_NAME."", DB_USER, DB_PASS);
-		
-		/* * * * *  S C H E M A  * * * * */
+        try {
+            $this->pdo = new PDO("pgsql:host='".$db['host']."'", $db['user'], $db['pass']);
+        } catch(\Exception $e) {
+            echo "Error & Exit: Could not connect to Postgres! user: '".$db['user']."', host: '".$db['host']."'\n";
+            echo $e->getMessage();
+            exit;
+        }
 
-		$sql="CREATE SCHEMA ".DB_SCHEMA." AUTHORIZATION ".DB_USER.";";
-		$pdo->exec($sql);
+        if($v) {
+            if(in_array($v, $versions)) {
+                $this->versions = [ "$v" ];
+            } else {
+                echo "<> Error & Exit: '$v' - version not found \n";
+                exit;
+            }
+        } else {
+            $this->versions = $versions;
+        }
+    }
 
-		echo "=> Schema: ".DB_SCHEMA." \n";
+    public function createDatabase()
+    {
+        $pdo = new PDO("pgsql:host='$this->db_host'", $this->db_user, $this->db_pass);
+        $sql_create_db = "
+            CREATE DATABASE $this->db_name
+            WITH 
+            OWNER = $this->db_user
+            ENCODING = 'UTF8'
+            TABLESPACE = pg_default
+            CONNECTION LIMIT = -1
+            TEMPLATE template0;";
+        $pdo->exec($sql_create_db);
+        echo "\n=> Database: $this->db_name \n";
+    }
 
-		/* * * * *  T A B L E S  * * * * */
+    public function createTables()
+    {
+        $pdo = new PDO("pgsql:host='$this->db_host';dbname='$this->db_name'", $this->db_user, $this->db_pass);
 
-		/* * * * *  D A T A  * * * * */
+        $sql_create_schema = "CREATE SCHEMA $this->db_schema AUTHORIZATION $this->db_user";
 
-		$sql ="
-			CREATE TABLE IF NOT EXISTS ".DB_SCHEMA.".data
-			(
-				i SERIAL PRIMARY KEY,
-				version character varying COLLATE pg_catalog.\"default\",
-				id jsonb,
-				attributes jsonb,
-				audiofiles jsonb
-			);
-			ALTER TABLE ".DB_SCHEMA.".data
-			OWNER to ".DB_USER."
-		";
-		$pdo->exec($sql);
-		echo "=> Table: ".DB_SCHEMA.".data \n";
-		
-		/* * * * *  C H A N G L O G  * * * * */
+        $sql_create_table_data = "
+            CREATE TABLE IF NOT EXISTS $this->db_schema.data
+            (
+                i SERIAL PRIMARY KEY,
+                version character varying COLLATE pg_catalog.\"default\",
+                id jsonb,
+                attributes jsonb,
+                audiofiles jsonb
+            );
+            ALTER TABLE $this->db_schema.data
+            OWNER to $this->db_user";
 
-		$sql ="
-			CREATE TABLE IF NOT EXISTS ".DB_SCHEMA.".changelog
-			(
-			    i SERIAL PRIMARY KEY,
-			    version character varying COLLATE pg_catalog.\"default\",
-			    card int,
-			    type character varying COLLATE pg_catalog.\"default\",
-			    change jsonb
-			);
-			ALTER TABLE ".DB_SCHEMA.".changelog
-			OWNER to ".DB_USER."
-		";
-		$pdo->exec($sql);
-		echo "=> Table: ".DB_SCHEMA.".changelog \n";
+        $sql_create_table_changelog = "
+            CREATE TABLE IF NOT EXISTS $this->db_schema.changelog
+            (
+                i SERIAL PRIMARY KEY,
+                version character varying COLLATE pg_catalog.\"default\",
+                card int,
+                type character varying COLLATE pg_catalog.\"default\",
+                change jsonb
+            );
+            ALTER TABLE $this->db_schema.changelog
+            OWNER to $this->db_user";
 
-		/* * * * *  L O C A L E S  * * * * */
+        $pdo->exec($sql_create_schema);
+        echo "=> Schema: $this->db_schema \n";
+        $pdo->exec($sql_create_table_data);
+        echo "=> Table: $this->db_schema.data \n";
+        $pdo->exec($sql_create_table_changelog);
+        echo "=> Table: $this->db_schema.changelog \n";
+        echo "=> Table: $this->db_schema.locale";
 
-		foreach ( $this->locales as $locale => $jsonLocale )
-		{
-		    $sql="
-		    	CREATE TABLE IF NOT EXISTS ".DB_SCHEMA.".locale_$locale
-		    	(
-		    	    i SERIAL PRIMARY KEY,
-		    	    name character varying COLLATE \"und-x-icu\",
-		    	    category text COLLATE \"und-x-icu\",
-		    	    ability text COLLATE \"und-x-icu\",
-		    	    ability_html text COLLATE \"und-x-icu\",
-		    	    keyword_html text COLLATE \"und-x-icu\",
-		    	    flavor text COLLATE \"und-x-icu\"
-				);
-		    	ALTER TABLE ".DB_SCHEMA.".locale_$locale
-		    	OWNER to ".DB_USER."
-			";
-		    $pdo->exec($sql);
-			echo "=> Table: ".DB_SCHEMA.".locale_$locale \n";
-		}
-	}
+        foreach ($this->locales as $locale => $json_locale)
+        {
+            ## DB > Table: locale_XX
+            $sql="
+                CREATE TABLE IF NOT EXISTS $this->db_schema.locale_$locale
+                (
+                    i SERIAL PRIMARY KEY,
+                    name character varying COLLATE \"und-x-icu\",
+                    category text COLLATE \"und-x-icu\",
+                    ability text COLLATE \"und-x-icu\",
+                    ability_html text COLLATE \"und-x-icu\",
+                    keyword_html text COLLATE \"und-x-icu\",
+                    flavor text COLLATE \"und-x-icu\",
+                    FOREIGN KEY(i) REFERENCES $this->db_schema.data(i) ON DELETE CASCADE
+                );
+                ALTER TABLE $this->db_schema.locale_$locale
+                OWNER to $this->db_user
+            ";
+            $pdo->exec($sql);
+            echo "_$locale ";
+            
+        }
+        echo "\n";
+    }
 
-	/*
-	 * 1. Insert into data & locale tables
-	 * 2. Insert into changelog
-	 * 
-	 * If a version is specified only insert a single card version.
-	 */
+    public function insertCardData()
+    {
+        $pdo = new PDO("pgsql:host='$this->db_host';dbname='$this->db_name'", $this->db_user, $this->db_pass);
 
-	public function insertData($v = '')
-	{
-		$pdo = new PDO("pgsql:host=".DB_HOST.";dbname=".DB_NAME."", DB_USER, DB_PASS);
+        $all_rows = 0;
+        echo "\n\n";
+        echo "  _|_|_|    _|  Depending on the hardware\n";
+        echo "_|        _|_|  this may take a while!\n";
+        echo "_|  _|_|    _|\n";
+        echo "_|    _|    _|  Inserting " . count($this->versions) . " version(s)\n";
+        echo "  _|_|_|    _|       with ". count($this->locales) . " locale(s)\n\n";
 
-		if ( $v !== '') {
-			if ( in_array( $v, $this->versions ) ) {
-				$versions = [ "$v" ];
-			} else {
-				echo "=> Error: '$v' - version not found \n";
-				$versions = [];
-			}
-		} else {
-			$versions = $this->versions;
-		}
-		/* Loop through every version first */
-		foreach ($versions as $version)
-		{
-			$json    = file_get_contents("src/Database/data/cards_v$version.json");
-			$data    = json_decode($json, true);
-		
-			/* Loop through every json field (id) */
-			foreach ($data as $key => $value)
-			{
-				/* Loop through every locale */
-				foreach ( $this->locales as $locale => $jsonLocale)
-				{
-					$name           = str_replace( "'", "''", $value['name'][$jsonLocale] );
-					$category       = str_replace( "'", "''", $value['categories'][$jsonLocale] ) ;
-					$ability        = str_replace( "'", "''", $value['ability'][$jsonLocale] ) ;
-					$abilityHTML    = str_replace( "'", "''", $value['abilityHTML'][$jsonLocale] ) ;
-					$keywordHTML    = str_replace( "'", "''", $value['keywordsHTML'][$jsonLocale] ) ;
-					$flavor         = str_replace( "'", "''", $value['flavor'][$jsonLocale] ) ;
-		
-					$sql ="INSERT INTO ".DB_SCHEMA.".locale_$locale
-						   ( i,         name,    category,    ability,    ability_html,   keyword_html,   flavor  )
-					VALUES ( DEFAULT, '$name', '$category', '$ability', '$abilityHTML', '$keywordHTML', '$flavor' )";
-					$pdo->exec($sql);
-				}
-				$cardid         = $value['cardId'];
-				$artid          = $value['ArtId'];
-				$audioid        = $value['AudioId'];
-				$json_id        = "{ \"card\": $cardid, \"art\": $artid, \"audio\": $audioid }";
-		
-				$power          = $value['power'] ?? 0;
-				$armor          = $value['armor'] ?? 0;
-				$provision      = $value['provision'] ?? 0;
-				$reach          = $value['reach'] ?? 0;
-		
-				$faction        = $value['faction'];
-				$faction2       = $value['factionSecondary'] ?? '';
-				$color          = $value['color'];
-				$type           = $value['type'];
-				$rarity         = $value['rarity'];
-				$artist         = $value['artist'] ?? 'N/A';
-				$artist         = str_replace( "'", "''", $artist );
-				$released       = $value['released'];
-				$availability   = $value['availability'];
-				$keyword        = implode( ', ', $value['keywords'] );				
-				$related        = implode( ', ', $value['related'] );
-		
-				$json_audiofiles = json_encode( $value['AudioFile'] );
-				
-				$json_attributes = "{ \"provision\": $provision, \"power\": $power, \"armor\": $armor, \"reach\": $reach, \"type\": \"$type\", \"color\": \"$color\", \"rarity\": \"$rarity\", \"set\": \"$availability\", \"related\": \"$related\", \"artist\": \"$artist\", \"faction\": \"$faction\", \"factionSecondary\": \"$faction2\" }";
-		
-				$sql ="INSERT INTO ".DB_SCHEMA.".data
-					   ( i,         version,         id,         attributes,         audiofiles )
-				VALUES ( DEFAULT, '$version', '$json_id', '$json_attributes', '$json_audiofiles' )";
+        echo "   Version\tCards\tTime\n";
+        foreach($this->versions as $version)
+        {
+            $time_start = microtime(true);
+            echo "=> $version\t";
+            $json = file_get_contents("src/Database/data/cards_v$version.json");
+            $data = json_decode($json, true);
 
-				$pdo->exec($sql);;
-			}
-			echo "=> Insert Data: $version \n";
-		}
+            foreach($data as $key => $val)
+            {
+                $id              = "{ \"card\": ".$val['cardId'].", \"art\": ".$val['ArtId'].", \"audio\": ".$val['AudioId']." }";
+                $attributes      = [];
+                $attributes['power']        = $val['power'] ?? 0;
+                $attributes['armor']        = $val['armor'] ?? 0;
+                $attributes['provision']    = $val['provision'] ?? 0;
+                $attributes['reach']        = $val['reach'] ?? 0;
+                $attributes['faction']      = $val['faction'];
+                $attributes['faction2']     = $val['factionSecondary'] ?? '';
+                $attributes['color']        = $val['color'];
+                $attributes['type']         = $val['type'];
+                $attributes['rarity']       = $val['rarity'];
+                $attributes['artist']       = $val['artist'] ?? 'N/A';
+                $attributes['availability'] = $val['availability'];
+                $attributes['related']      = implode( ', ', $val['related'] );
+                $json_attributes = json_encode($attributes);
+                $json_audiofiles = json_encode( $val['AudioFile'] );
 
-		$json    = file_get_contents('src/Database/data/changelog.json');
-		$data    = json_decode($json, true);
-		/* Loop through every json field (id) */
-		
-		foreach( $data as $version => $cards ) {
+                $sql = "INSERT INTO $this->db_schema.data (i, version, id, attributes, audiofiles)
+                        VALUES (DEFAULT, '$version', '$id', '$json_attributes', '$json_audiofiles')";
+                $pdo->exec($sql);;
 
-			for($i = 0; $i < count($cards); $i++ ) {
+                foreach($this->locales as $locale => $json_locale)
+                {
+                    ## escape '
+                    $name        = $val['name'][$json_locale]         ? str_replace("'", "''", $val['name'][$json_locale])         : '';
+                    $category    = $val['categories'][$json_locale]   ? str_replace("'", "''", $val['categories'][$json_locale])   : '';
+                    $ability     = $val['ability'][$json_locale]      ? str_replace("'", "''", $val['ability'][$json_locale])      : '';
+                    $abilityHTML = $val['abilityHTML'][$json_locale]  ? str_replace("'", "''", $val['abilityHTML'][$json_locale])  : '';
+                    $keywordHTML = $val['keywordsHTML'][$json_locale] ? str_replace("'", "''", $val['keywordsHTML'][$json_locale]) : '';
+                    $flavor      = $val['flavor'][$json_locale]       ? str_replace("'", "''", $val['flavor'][$json_locale])       : '';
 
-				$card_id	= $cards[$i]['card'];
-				$change		= $cards[$i]['change'];
+                    $sql ="
+                        INSERT INTO $this->db_schema.locale_$locale(i, name, category, ability, ability_html, keyword_html, flavor)
+                        VALUES(DEFAULT, '$name', '$category', '$ability', '$abilityHTML', '$keywordHTML', '$flavor')";
+                    $pdo->exec($sql);
+                }
+            }
+            $total = count($data);
+            $time_end = microtime(true);
+            $all_rows += $total;
+            echo "$total\t". round($time_end-$time_start, 2) ."s\n";
+        }
+        $this->total_rows = $all_rows;
+    }
 
-				$changeArray = [];
-				$cards[$i]['power']				? $changeArray[] = 'power' : '';
-				$cards[$i]['armor']				? $changeArray[] = 'armor' : '';
-				$cards[$i]['provision']			? $changeArray[] = 'provision' : '';
-				$cards[$i]['leader-provision']	? $changeArray[] = 'leader' : '';
-				$cards[$i]['category']			? $changeArray[] = 'category' : '';
-				$cards[$i]['ability']			? $changeArray[] = 'ability' : '';
-				$cards[$i]['keyword']			? $changeArray[] = 'keyword' : '';
-				$json = json_encode($changeArray);
+    public function insertChangelogData(): void
+    {
+        
+        $pdo = new PDO("pgsql:host='$this->db_host';dbname='$this->db_name'", $this->db_user, $this->db_pass);
 
-				if ( $v === $version ) {
-					$sql ="INSERT INTO ".DB_SCHEMA.".changelog
-						   ( i,         card,         version,         type,         change)
-					VALUES ( DEFAULT, '$card_id', '$version', '$change', '$json' )";
+        echo "=> Insert Data: Changelog";
+        $json    = file_get_contents('src/Database/data/changelog.json');
+        $data    = json_decode($json, true);
 
-					$pdo->exec($sql);
-				} elseif ( $v === '') {
-					$sql ="INSERT INTO ".DB_SCHEMA.".changelog
-						   ( i,         card,         version,         type,         change)
-					VALUES ( DEFAULT, '$card_id', '$version', '$change', '$json' )";
-					$pdo->exec($sql);
-				}
-			}
-		}
-		echo "=> Insert Data: Changelog";
-	}
-	
+        foreach($data as $version => $cards) {
+            ## only insert a single version if specified
+            if (in_array($version, $this->versions)) {
+                for($i = 0; $i < count($cards); $i++ ) {
 
-	public function dropDatabase()
-	{
-		$pdo = new PDO("pgsql:host=".DB_HOST."", DB_USER, DB_PASS);
+                    $card_id	= $cards[$i]['card'];
+                    $change		= $cards[$i]['change'];
 
-		/* Drop active connections */
-		try {
-			$sql = "
-				REVOKE CONNECT ON DATABASE ".DB_NAME." FROM public;
-				SELECT pid, pg_terminate_backend(pid) 
-				FROM pg_stat_activity 
-				WHERE datname = '".DB_NAME."' AND pid <> pg_backend_pid();
-			";
-			$pdo->exec($sql);
+                    $change_array = [];
+                    $cards[$i]['power']            ? $change_array[] = 'power'     : '';
+                    $cards[$i]['armor']            ? $change_array[] = 'armor'     : '';
+                    $cards[$i]['provision']        ? $change_array[] = 'provision' : '';
+                    $cards[$i]['leader-provision'] ? $change_array[] = 'leader'    : '';
+                    $cards[$i]['category']         ? $change_array[] = 'category'  : '';
+                    $cards[$i]['ability']          ? $change_array[] = 'ability'   : '';
+                    $cards[$i]['keyword']          ? $change_array[] = 'keyword'   : '';
+                    $json = json_encode($change_array);
+                
+                    $sql = "INSERT INTO $this->db_schema.changelog (i, card, version, type, change)
+                            VALUES (DEFAULT, '$card_id', '$version', '$change', '$json')";
+                    $pdo->exec($sql);
+                }
+            }
+        }
+    }
 
-			/* Drop database */
-			$sql = "DROP DATABASE IF EXISTS ".DB_NAME."";
-			$pdo->exec($sql);
+    public function resetChangelog(): void
+    {
+        $pdo = new PDO("pgsql:host='$this->db_host';dbname='$this->db_name'", $this->db_user, $this->db_pass);
 
-			echo "=> Database '".DB_NAME."' dropped";
-		} catch(Exception $e) {
-			echo "=> Database '".DB_NAME."' not found";
-		}
-	}
+        $sql = "TRUNCATE $this->db_schema.changelog RESTART IDENTITY";
+        $pdo->exec($sql);
 
+        echo "=> Reset table: $this->db_schema.changelog (TRUNCATE)\n";
+
+        $this->insertChangelogData();        
+    }
+
+    public function onlyLatestVersion(): void
+    {
+        $pdo = new PDO("pgsql:host='$this->db_host';dbname='$this->db_name'", $this->db_user, $this->db_pass);
+
+        $sql ="SELECT version FROM $this->db_schema.data ORDER BY i DESC LIMIT 1";
+        $stmt = $pdo->query($sql);
+        $cards = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+
+        if(($cards['version'] ?? null) === end($this->versions)) {
+            $version = end($this->versions);
+            $this->versions = array_slice($this->versions, -1);
+
+            echo "=> The current version is the latest (".$cards['version'].")\n";
+            $sql = "DELETE FROM $this->db_schema.data WHERE $this->db_schema.data.version != '$version'";
+            $pdo->exec($sql);
+            echo "=> Deleted every version except the current\n";
+        } else {
+            $version = end($this->versions);
+            $this->versions = array_slice($this->versions, -1);
+
+            $this->insertCardData();
+            $sql = "DELETE FROM $this->db_schema.data WHERE $this->db_schema.data.version != '$version'";
+            $pdo->exec($sql);
+            echo "\nDeleted every version except the latest\n";
+        }
+
+    }
+
+    public function dropDatabase(): void
+    {
+        $pdo = new PDO("pgsql:host='$this->db_host'", $this->db_user, $this->db_pass);
+
+        /* Drop active connections */
+        try {
+            $sql = "
+                REVOKE CONNECT ON DATABASE \"$this->db_name\" FROM public;
+                SELECT pid, pg_terminate_backend(pid) 
+                FROM pg_stat_activity 
+                WHERE datname = '$this->db_name' AND pid <> pg_backend_pid();
+            ";
+            $pdo->exec($sql);
+
+            $sql = "DROP DATABASE IF EXISTS \"$this->db_name\"";
+            $pdo->exec($sql);
+
+            echo "=> Database '$this->db_name' dropped\n";
+        } catch(Exception $e) {
+            echo "=> Database '$this->db_name' not found\n";
+        }
+    }
 }

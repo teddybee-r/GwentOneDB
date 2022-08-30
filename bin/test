@@ -1,0 +1,9 @@
+#!/usr/bin/env php
+<?php
+
+/* Load requirements */
+include 'config/bootstrap.php';
+
+
+$test = New G1\Tests\GwentDatabase();
+$test->executeTests();

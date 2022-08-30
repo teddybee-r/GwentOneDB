@@ -1,0 +1,68 @@
+#!/usr/bin/env php
+<?php
+
+/* Load requirements */
+include 'config/bootstrap.php';
+echo "\n\n";
+echo "  _|_|_|    _|  PostgreSQL Gwent Database\n";
+echo "_|        _|_|               by gwent.one\n";
+echo "_|  _|_|    _|\n";
+echo "_|    _|    _|  Database: ".$db['name']."\n";
+echo "  _|_|_|    _|  Schema:   ".$db['schema']."\n";
+echo "\n\n";
+echo "-- First Time Setup --\n";
+echo "1. Build database structure and insert data\n";
+echo "2. Build database structure\n";
+echo "3. Insert data: Every version\n\n";
+
+echo "-- Update DB --\n";
+echo "11. Insert data: Single version\n";
+echo "12. Insert data: Only current version\n";
+echo "## This inserts the latest and deletes previous versions\n\n";
+
+echo "-- Reset Changelog --\n";
+echo "21. Truncate changelog and insert data\n";
+echo "## Changelog data gets updated for previous versions sometimes\n\n";
+
+echo "-- Delete DB --\n";
+echo "99. Drop Database\n\n";
+
+$input = (int)readline('Enter one of the above numbers: ');
+
+
+$DB = New G1\Database\CreateGwentDatabase();
+
+if ( $input === 1 ) {
+	$time_start = microtime(true);
+	$DB->createDatabase();
+	$DB->createTables();
+	$DB->insertCardData();
+	$DB->insertChangelogData();
+	$time_end = microtime(true);
+	echo "\n=> Time:" . round($time_end-$time_start, 2) ."s\n";
+} elseif ( $input === 2 ) {
+	$DB->createDatabase();
+	$DB->createTables();
+} elseif ( $input === 3 ) {
+	$DB->insertCardData();
+	$DB->insertChangelogData();
+} elseif ( $input === 11 ) {
+	$v = (string)readline("Enter the version (10.8.0): ");
+	$time_start = microtime(true);
+	$DB = New G1\Database\CreateGwentDatabase($v);
+	$DB->insertCardData();
+	$DB->insertChangelogData();
+	$time_end = microtime(true);
+	echo "\n=> Time:" . round($time_end-$time_start, 2) ."s\n";
+} elseif ( $input === 12 ) {
+	$DB->onlyLatestVersion();
+} elseif ( $input === 21 ) {
+	$time_start = microtime(true);
+	$DB->resetChangelog();
+	$time_end = microtime(true);
+	echo "\n=> Time:" . round($time_end-$time_start, 2) ."s\n";
+} elseif ( $input === 99 ) {
+	$confirm = (string)readline("Type '".$db['name']."' to confirm: ");
+	if ( $confirm === $db['name'] )
+	$DB->dropDatabase();
+}
