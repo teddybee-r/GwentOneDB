@@ -154,18 +154,18 @@ Class CreateGwentDatabase
             {
                 $id              = "{ \"card\": ".$val['cardId'].", \"art\": ".$val['ArtId'].", \"audio\": ".$val['AudioId']." }";
                 $attributes      = [];
-                $attributes['power']        = $val['power'] ?? 0;
-                $attributes['armor']        = $val['armor'] ?? 0;
-                $attributes['provision']    = $val['provision'] ?? 0;
-                $attributes['reach']        = $val['reach'] ?? 0;
-                $attributes['faction']      = $val['faction'];
-                $attributes['faction2']     = $val['factionSecondary'] ?? '';
-                $attributes['color']        = $val['color'];
-                $attributes['type']         = $val['type'];
-                $attributes['rarity']       = $val['rarity'];
-                $attributes['artist']       = $val['artist'] ?? 'N/A';
-                $attributes['availability'] = $val['availability'];
-                $attributes['related']      = implode( ', ', $val['related'] );
+                $attributes['power']            = $val['power'] ?? 0;
+                $attributes['armor']            = $val['armor'] ?? 0;
+                $attributes['provision']        = $val['provision'] ?? 0;
+                $attributes['reach']            = $val['reach'] ?? 0;
+                $attributes['faction']          = $val['faction'];
+                $attributes['factionSecondary'] = $val['factionSecondary'] ?? '';
+                $attributes['color']            = $val['color'];
+                $attributes['type']             = $val['type'];
+                $attributes['rarity']           = $val['rarity'];
+                $attributes['artist']           = $val['artist'] ?? 'N/A';
+                $attributes['availability']     = $val['availability'];
+                $attributes['related']          = implode( ', ', $val['related'] );
                 $json_attributes = json_encode($attributes);
                 $json_audiofiles = json_encode( $val['AudioFile'] );
 
