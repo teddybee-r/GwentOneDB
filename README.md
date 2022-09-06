@@ -49,21 +49,21 @@ _|    _|    _|  Database: gwent
   _|_|_|    _|  Schema:   card
 
 
--- First Time Setup --
-1. Build database structure and insert data
-2. Build database structure
-3. Insert data: Every version
+--- First Time Setup ---
+ 1. Build database structure and insert data
+ 2. Build database structure
+ 3. Insert data: Every version
 
--- Update DB --
+--- Update DB ---
 11. Insert data: Single version
 12. Insert data: Only current version
-## This inserts the latest and deletes previous versions
+##  ^ Inserts the latest and deletes previous versions
 
--- Reset Changelog --
+--- Reset Changelog ---
 21. Truncate changelog and insert data
-## Changelog data gets updated for previous versions sometimes
+##  ^ Changelog data gets updated for previous versions sometimes
 
--- Delete DB --
+--- Delete DB --
 99. Drop Database
 
 Enter one of the above numbers: 1

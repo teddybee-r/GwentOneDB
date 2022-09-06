@@ -10,21 +10,21 @@ echo "_|  _|_|    _|\n";
 echo "_|    _|    _|  Database: ".$db['name']."\n";
 echo "  _|_|_|    _|  Schema:   ".$db['schema']."\n";
 echo "\n\n";
-echo "-- First Time Setup --\n";
-echo "1. Build database structure and insert data\n";
-echo "2. Build database structure\n";
-echo "3. Insert data: Every version\n\n";
+echo "--- First Time Setup ---\n";
+echo " 1. Build database structure and insert data\n";
+echo " 2. Build database structure\n";
+echo " 3. Insert data: Every version\n\n";
 
 echo "-- Update DB --\n";
 echo "11. Insert data: Single version\n";
 echo "12. Insert data: Only current version\n";
-echo "## This inserts the latest and deletes previous versions\n\n";
+echo "##  ^ Inserts the latest and deletes previous versions\n\n";
 
-echo "-- Reset Changelog --\n";
+echo "--- Reset Changelog ---\n";
 echo "21. Truncate changelog and insert data\n";
-echo "## Changelog data gets updated for previous versions sometimes\n\n";
+echo "##  ^Changelog data gets updated for previous versions sometimes\n\n";
 
-echo "-- Delete DB --\n";
+echo "--- Delete DB ---\n";
 echo "99. Drop Database\n\n";
 
 $input = (int)readline('Enter one of the above numbers: ');
