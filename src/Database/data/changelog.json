@@ -3601,5 +3601,9 @@
         { "card": 203094, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "buff" },
         { "card": 203097, "power": 0, "armor": 0, "provision": 1, "leader-provision": 0, "category": 0, "ability": 0, "keyword": 0, "change": "nerf" },
         { "card": 203119, "power": 1, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "buff" }
+    ],
+    "10.9.1": [
+        { "card": 202450, "power": 1, "armor": 1, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "nerf" },
+        { "card": 203168, "power": 0, "armor": 0, "provision": 1, "leader-provision": 0, "category": 0, "ability": 0, "keyword": 0, "change": "nerf" }
     ]
 }
