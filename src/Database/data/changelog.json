@@ -3790,5 +3790,25 @@
         { "card": 203200, "power": 0, "armor": 0, "provision": 1, "leader-provision": 0, "category": 0, "ability": 0, "keyword": 0, "change": "buff" },
         { "card": 203202, "power": 0, "armor": 0, "provision": 1, "leader-provision": 0, "category": 1, "ability": 0, "keyword": 0, "change": "buff" },
         { "card": 203204, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "rework" }
+    ],
+    "11.2.0": [
+        { "card": 113207, "power": 0, "armor": 0, "provision": 1, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "buff" },
+        { "card": 200078, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "buff" },
+        { "card": 200115, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "buff" },
+        { "card": 201772, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "buff" },
+        { "card": 202303, "power": 0, "armor": 0, "provision": 0, "leader-provision": 1, "category": 0, "ability": 0, "keyword": 0, "change": "buff" },
+        { "card": 202396, "power": 1, "armor": 0, "provision": 1, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "rework" },
+        { "card": 202437, "power": 1, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 0, "keyword": 0, "change": "buff" },
+        { "card": 202460, "power": 1, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 0, "keyword": 0, "change": "nerf" },
+        { "card": 202784, "power": 1, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "buff" },
+        { "card": 202823, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "adjustment" },
+        { "card": 202827, "power": 1, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 0, "keyword": 0, "change": "nerf" },
+        { "card": 202927, "power": 1, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 0, "keyword": 0, "change": "buff" },
+        { "card": 203112, "power": 0, "armor": 0, "provision": 1, "leader-provision": 0, "category": 0, "ability": 0, "keyword": 0, "change": "nerf" },
+        { "card": 203118, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "buff" },
+        { "card": 203121, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 1, "ability": 0, "keyword": 0, "change": "nerf" },
+        { "card": 203145, "power": 0, "armor": 0, "provision": 1, "leader-provision": 0, "category": 0, "ability": 0, "keyword": 0, "change": "nerf" },
+        { "card": 203147, "power": 0, "armor": 0, "provision": 1, "leader-provision": 0, "category": 0, "ability": 0, "keyword": 0, "change": "nerf" },
+        { "card": 203165, "power": 0, "armor": 0, "provision": 1, "leader-provision": 0, "category": 0, "ability": 0, "keyword": 0, "change": "nerf" }
     ]
 }
