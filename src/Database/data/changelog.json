@@ -4076,5 +4076,31 @@
         { "card": 203284, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 0, "keyword": 0, "change": "new" },
         { "card": 203285, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 0, "keyword": 0, "change": "new" },
         { "card": 203286, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 0, "keyword": 0, "change": "new" }
+    ],
+    "11.10.0": [
+        { "card": 132210, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "text" },
+        { "card": 162305, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "nerf" },
+        { "card": 200038, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 1, "ability": 0, "keyword": 0, "change": "buff" },
+        { "card": 200224, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "buff" },
+        { "card": 200530, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 1, "ability": 1, "keyword": 0, "change": "adjustment" },
+        { "card": 200532, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 1, "ability": 0, "keyword": 0, "change": "buff" },
+        { "card": 201618, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 1, "ability": 0, "keyword": 0, "change": "buff" },
+        { "card": 201620, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 1, "ability": 0, "keyword": 0, "change": "buff" },
+        { "card": 201626, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "adjustment" },
+        { "card": 201676, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "buff" },
+        { "card": 202195, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "adjustment" },
+        { "card": 202202, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 1, "ability": 0, "keyword": 0, "change": "buff" },
+        { "card": 202213, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "buff" },
+        { "card": 202445, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "buff" },
+        { "card": 203123, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "adjustment" },
+        { "card": 203193, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "nerf" },
+        { "card": 203271, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "nerf" },
+        { "card": 203276, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "text" },
+        { "card": 203277, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "buff" },
+        { "card": 203279, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "adjustment" },
+        { "card": 203281, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "nerf" },
+        { "card": 203282, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "buff" },
+        { "card": 203284, "power": 0, "armor": 0, "provision": 0, "leader-provision": 0, "category": 0, "ability": 1, "keyword": 0, "change": "buff" },
+        { "card": 203285, "power": 0, "armor": 0, "provision": 1, "leader-provision": 0, "category": 0, "ability": 0, "keyword": 0, "change": "nerf" }
     ]
 }
